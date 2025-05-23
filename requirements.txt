@@ -1,0 +1,9 @@
+python-dotenv
+
+numpy
+scipy
+matplotlib
+
+openai
+langchain
+langchain_community
