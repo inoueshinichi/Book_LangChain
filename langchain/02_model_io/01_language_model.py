@@ -34,7 +34,7 @@ from langchain_community.chat_models import ChatOpenAI  #← モジュールを�
 from langchain.schema import HumanMessage 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 logger.debug(f"BASE_DIR: {BASE_DIR}")
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 

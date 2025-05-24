@@ -3,6 +3,9 @@ LangChain 完全入門
 + RAG(Retrieval-Augumented Generation) : 言語モデルが知らない情報に対して答えさせる技術
 + ReACT(Reasoning and Acting) : 推論と行動を言語モデル自身に判断させることでネット検索やファイルへの保存を自律的に実行させる技術
 
+## Python/JavaScriptによるOpenAIプログラミング
++ 
+
 ## Model I/O
 + モデルを扱いやすくする
 1. プロンプトの準備

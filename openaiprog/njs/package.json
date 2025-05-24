@@ -1,0 +1,23 @@
+{
+  "name": "njs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node express_app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.1",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0",
+    "openai": "^4.103.0"
+  }
+}

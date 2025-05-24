@@ -4,6 +4,8 @@ numpy
 scipy
 matplotlib
 
+Flask
+
 openai
 langchain
 langchain_community
