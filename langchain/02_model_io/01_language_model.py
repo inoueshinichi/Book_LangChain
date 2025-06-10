@@ -32,6 +32,7 @@ logger.setLevel(logging.DEBUG)
 from dotenv import load_dotenv
 # from openai import OpenAI
 from langchain_community.chat_models import ChatOpenAI  #← モジュールをインポート
+from langchain.llms import openai
 from langchain.schema import (
     HumanMessage,
     AIMessage,
@@ -60,18 +61,24 @@ def language_case1():
     try:
         num_content = 1
 
-        chat = ChatOpenAI(
-            api_key=OPENAI_SECRET_KEY,
-            verbose=True,
-            model="gpt-4",
-            temperature=0.7,
-            # max_tokens=100,
-            n=num_content,
+        # chat = ChatOpenAI(
+        #     api_key=OPENAI_SECRET_KEY,
+        #     verbose=True,
+        #     model="gpt-4",
+        #     temperature=0.7,
+        #     # max_tokens=100,
+        #     n=num_content,
+        # )
+
+        # result = chat(messages=[
+        #     HumanMessage(content="Next.jsの利点について教えて"),
+        # ])
+
+        llm = openai.OpenAI(
+            model='gpt-4'
         )
 
-        result = chat(messages=[
-            HumanMessage(content="Next.jsの利点について教えて"),
-        ])
+        result = llm("")
 
         logger.info(result)
         print('---------[response message]-----------')

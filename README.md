@@ -3,8 +3,6 @@ LangChain 完全入門
 + RAG(Retrieval-Augumented Generation) : 言語モデルが知らない情報に対して答えさせる技術
 + ReACT(Reasoning and Acting) : 推論と行動を言語モデル自身に判断させることでネット検索やファイルへの保存を自律的に実行させる技術
 
-## Python/JavaScriptによるOpenAIプログラミング
-+ 
 
 ## Model I/O
 + モデルを扱いやすくする
@@ -34,3 +32,10 @@ LangChain 完全入門
 + 他のモジュールと組み合わせる前提
 + ログ出力や外部ライブラリとの連携
 
+# Python/JavaScriptによるOpenAIプログラミング
+4. Completionを探究する
+5. Chat CompletionとTranscription
+6. Image Generation
+7. モデルとデータのチューニング
+8. Power Platform環境からのAPI利用
+9. ノーコード/マクロからの利用

@@ -30,6 +30,7 @@ logger.setLevel(logging.DEBUG)
 
 from dotenv import load_dotenv
 from openai import OpenAI
+import openai
 from flask import Flask, render_template, request
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,13 +53,15 @@ client = OpenAI(api_key=OPENAI_SECRET_KEY)
 def index():
     return render_template('index.html', question=None, result=None)
 
+
 @app.route('/', methods=['POST'])
 def submit():
     prompt = request.form['prompt']
-    result = access_openai(prompt)
+    result = access_openai_1(prompt)
     return render_template('index.html', question=prompt, result=result)
 
-def access_openai(prompt_value):
+
+def access_openai_1(prompt_value):
     response = client.completions.create(
             model="gpt-3.5-turbo-instruct", 
             prompt=prompt_value,  #←promptを指定
@@ -68,6 +71,45 @@ def access_openai(prompt_value):
         )
     
     return response.choices[0].text.strip()
+
+
+def access_openai_2(prompt_value):
+    try:
+        response = client.completions.create(
+            model="gpt-3.5-turbo-instruct",
+            prompt=prompt_value,
+            stop="。",
+            max_tokens=150,
+            temperature=0.7,
+        )
+    
+        result = response.choices[0].text.strip()
+
+        print("\n結果: " + result)
+
+    except openai.AuthenticationError as e:
+        print(f"APIの認証に失敗しました: {e}")
+        pass
+    except openai.APIConnectionError as e:
+        print(f"APIへの接続に失敗しました。: {e}")
+        pass
+    except openai.InternalServerError as e:
+        print(f"無効なリクエストが送られました。: {e}")
+        pass
+    except openai.RateLimitError as e:
+        print(f"APIの利用の上限に達しました。: {e}")
+        pass
+    except openai.APIError as e:
+        print(f"APIエラーが発生しました。: {e}")
+        pass
+    except Exception as e:
+        print(f"エラー発生: {e}")
+        pass
+    
+    
+
+
+
 
 
 if __name__ == "__main__":
