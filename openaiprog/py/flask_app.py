@@ -87,6 +87,9 @@ def access_openai_2(prompt_value):
 
         print("\n結果: " + result)
 
+    except openai.APITimeoutError as e:
+        print(f"タイムアウトしました。： {e}")
+        pass   
     except openai.AuthenticationError as e:
         print(f"APIの認証に失敗しました: {e}")
         pass
@@ -95,20 +98,22 @@ def access_openai_2(prompt_value):
         pass
     except openai.InternalServerError as e:
         print(f"無効なリクエストが送られました。: {e}")
-        pass
+        pass    
     except openai.RateLimitError as e:
         print(f"APIの利用の上限に達しました。: {e}")
+        pass
+    except openai.APIStatusError as e:
+        print(f"レスポンスのステータスが不正です。： {e}")
         pass
     except openai.APIError as e:
         print(f"APIエラーが発生しました。: {e}")
         pass
+    except openai.OpenAIError as e:
+        print(f"OpenAIのリクエストでエラーが発生しました。： {e}")
+        pass
     except Exception as e:
         print(f"エラー発生: {e}")
         pass
-    
-    
-
-
 
 
 
