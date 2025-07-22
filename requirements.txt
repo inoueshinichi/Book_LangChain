@@ -7,5 +7,6 @@ matplotlib
 Flask
 
 openai
+tiktoken
 langchain
 langchain_community
