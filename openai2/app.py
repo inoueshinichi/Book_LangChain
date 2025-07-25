@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import shutil
 from pprint import pprint
+import json
 
 import logging
 logging.basicConfig(format="%(asctime)s [%(levelname)s] (Line:%(lineno)d) at %(name)s : %(message)s", datefmt="[%X]")
@@ -73,6 +74,70 @@ def render_summary_page():
         logger.info(summarized_text)
     return render_template("summary.html", input_text=input_text, summary=summarized_text)
 
+
+# function calling
+@app.route("/send_email", methods=["GET", "POST"])
+def render_send_email_page(): # メール送信画面
+    input_text = ""
+    email_body = ""
+    to_address = ""
+    if request.method == "POST":
+        input_text = request.form["input_text"]
+        model_response = prepare_email_summary(input_text) # 外部API呼び出し
+        if model_response.finish_reason == "function_call":
+            function_call = model_response.message.function_call
+            if function_call.name == "send_email":
+                arguments = json.loads(function_call.arguments)
+                to_address = arguments.get("to_address", "")
+                email_body = arguments.get("email_body", "")
+                send_email(to_address, email_body) # メール送信(モック)
+
+    return render_template("send_email.html", 
+                           input_text=input_text, 
+                           email_body=email_body, 
+                           to_address=to_address)
+
+# prepare_email_summaryの定義
+def prepare_email_summary(input_text):
+    num_input_tokens = len(ENCODING.encode(input_text))
+    if num_input_tokens > MAX_INPUT_TOKENS:
+        return "文字数が多すぎます"
+    completion = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[
+            {"role":  "system", "content": "メールの宛先を抽出してto_addressに、内容のまとめをemail_bodyに設定してください。"},
+            {"role": "user", "content": input_text},
+        ],
+        functions=[
+            {
+                "name": "send_email",
+                "description": "メールを送る処理",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "to_address": {
+                            "type": "string",
+                            "description": "メールの宛先"
+                        },
+                        "email_body": {
+                            "type": "string",
+                            "description": "メールの内容",
+                        },
+                    },
+                    "required": ["to_address", "email_body"]
+                }
+            }
+        ],
+        function_call="auto",
+        max_tokens=1000
+    )
+
+    return completion.choices[0]
+
+def send_email(to_address, email_body):
+    # メール送信処理をここに書く。下記はモック
+    print(f"{to_address}宛にメールを送信しました。")
+    print(email_body)
 
 if __name__ == "__main__":
     app.run(debug=True)
