@@ -139,6 +139,29 @@ def send_email(to_address, email_body):
     print(f"{to_address}宛にメールを送信しました。")
     print(email_body)
 
+
+@app.route("/create_image", methods=["GET", "POST"])
+def render_create_image_page():
+    input_text = ""
+    image_url = ""
+    if request.method == "POST":
+        input_text = request.form["input_text"]
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=input_text,
+            size="1024x1024",
+            quality="hd",
+            style="vivid",
+        )
+        image_url = response.data[0].url
+
+
+    return render_template("create_image.html", 
+                           input_text=input_text,
+                           image_url=image_url)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

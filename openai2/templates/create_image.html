@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>画像の生成</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="{{ url_for('render_summary_page') }}">まとめ</a>
+                <a href="{{ url_for('render_send_email_page') }}">メール送信</a>
+                <a href="{{ url_for('render_create_image_page') }}">画像生成</a>
+            </nav>
+        </header>
+        <main class="container">
+            <p class="description">どんな画像を生成したいか入力してください</p>
+            <form action="{{ url_for('render_create_image_page') }}" method="POST">
+                <textarea name="input_text" rows="10">{% if input_text is defined %}{{ input_text }}{% endif %}</textarea>
+                <input type="submit" value="送信"/>
+            </form>
+            {% if image_url %}
+            <section class="summary">
+                <h2>生成された画像</h2>
+                <img src="{{ image_url }}" width="100%"/>
+            </section>
+            {% endif %}
+        </main>
+    </body>
+</html>
