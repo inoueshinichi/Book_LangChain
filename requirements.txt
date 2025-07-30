@@ -9,4 +9,5 @@ Flask
 openai
 tiktoken
 langchain
-langchain_community
+# langchain_community
+langchain_openai
