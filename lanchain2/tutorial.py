@@ -96,6 +96,7 @@ def cache():
     print(response.generations[0][0].text)
     print(response.llm_output)
 
+
 def chat1():
     chat = ChatOpenAI(max_tokens=300, api_key=OPENAI_SECRET_KEY)
     response = chat.invoke([
@@ -103,6 +104,7 @@ def chat1():
         HumanMessage("私は35歳独身です。これからどのように生きていけば良いでしょうか。好きなことは技術です。")
     ])
     pprint(response.content)
+
 
 def chat2():
     chat = ChatOpenAI(max_tokens=300, api_key=OPENAI_SECRET_KEY)
@@ -130,6 +132,7 @@ def chat2():
 
     pprint(response.llm_output)
 
+
 def invoke():
     llm = OpenAI(openai_api_key=OPENAI_SECRET_KEY)
     chat = ChatOpenAI(api_key=OPENAI_SECRET_KEY)
@@ -139,6 +142,9 @@ def invoke():
     print(f"こんにちは -(llm)->{llm.invoke("こんにちは")}")
     print(f"こんにちは -(chat)->{chat.invoke("こんにちは")}")
 
+
+
+
 if __name__ == "__main__":
     # llm()
     # generate()
@@ -146,3 +152,4 @@ if __name__ == "__main__":
     # chat1()
     # chat2()
     invoke()
+    pass
