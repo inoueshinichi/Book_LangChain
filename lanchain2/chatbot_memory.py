@@ -143,9 +143,122 @@ def token_memory():
     memory.save_context({"input": "元気ですか？"}, {"output": "まあまあですね。"}) # トークン数のチェック
     print(memory.load_memory_variables({}))
 
+
+def summary_memory():
+    chat_model = ChatOpenAI(max_tokens=300, api_key=OPENAI_SECRET_KEY)
+
+    # Messageを格納する際に要約して履歴として残す
+    memory = ConversationSummaryMemory(llm=chat_model)
+    memory.save_context({"input": "こんにちは"}, {"output": "どうも"})
+    print(memory.load_memory_variables({})["history"])
+
+    memory.save_context({"input": "今日の天気はどうなりますか?"}, 
+                        {"output": "申し訳ございませんが、私はリアルタイムの天気情報を持っていません"})
+    
+    print("---")
+
+    print(memory.load_memory_variables({})["history"])
+
+
+def summary_token_memory():
+    chat_model = ChatOpenAI(max_tokens=200, api_key=OPENAI_SECRET_KEY)
+
+    # 指定トークン数を超えると自動で要約した内容を履歴として残す
+    memory = ConversationSummaryBufferMemory(llm=chat_model, max_token_limit=60)
+    memory.save_context({"input": "今日の天気はどうなりますか?"}, 
+                        {"output": "申し訳ございませんが、私はリアルタイムの天気情報を持っていません"})
+    
+    print(memory.load_memory_variables({})["history"])
+
+    print("---")
+
+    memory.save_context({"input": "明日の天気はどうなりますか？"},
+                        {"output": "申し訳ございませんが、私はリアルタイムの天気情報を持っていません"})
+    
+    print(memory.load_memory_variables({})["history"])
+
+
+from langchain.schema.messages import get_buffer_string
+from langchain.chains.llm import LLMChain
+from langchain.prompts.prompt import PromptTemplate
+from langchain.memory import ConversationSummaryBufferMemory
+from langchain.memory.summary import SummarizerMixin
+from langchain_core.prompts import BasePromptTemplate
+
+CUSTOM_DEFAULT_SUMMARIZER_TEMPLATE = """
+履歴と最新の会話を要約してください。
+
+# 履歴
+{summary}
+
+# 最新の会話
+Human: {new_lines}
+
+出力：
+"""
+
+CUSTOM_SUMMARY_PROMPT = PromptTemplate(
+    input_variables=["summary", "new_lines"],
+    template=CUSTOM_DEFAULT_SUMMARIZER_TEMPLATE
+)
+
+class CustomConversationSummaryBufferMemory(ConversationSummaryBufferMemory):
+    prompt: BasePromptTemplate = CUSTOM_SUMMARY_PROMPT # langchainの基底クラスのフィールドのオーバーライドはannotation必須.
+
+
+
+def custom_summary_token_memory():
+    chat_model = ChatOpenAI(max_tokens=200, api_key=OPENAI_SECRET_KEY)
+
+    # custom memory with buffer
+    memory = CustomConversationSummaryBufferMemory(llm=chat_model, max_token_limit=60)
+    memory.save_context({"input": "今日の天気はどうなりますか?"}, 
+                        {"output": "申し訳ございませんが、私はリアルタイムの天気情報を持っていません"})
+    
+    print(memory.load_memory_variables({})["history"])
+
+    print("---")
+
+    memory.save_context({"input": "明日の天気はどうなりますか？"},
+                        {"output": "申し訳ございませんが、私はリアルタイムの天気情報を持っていません"})
+    
+    print(memory.load_memory_variables({})["history"])
+
+
+
+def chatbot_summary_history():
+    chat_llm = ChatOpenAI(max_tokens=500, api_key=OPENAI_SECRET_KEY)
+
+    # 会話履歴
+    conversation_memory = ConversationBufferWindowMemory(return_messages=True, k=2)
+
+    question_count = 0
+
+    # ユーザーの質問が10回になるまでループ
+    while question_count < 10:
+        user_input = input("質問内容を入力してください：")
+        human_message = HumanMessage(content=user_input)
+
+        conversation_memory.chat_memory.add_message(human_message)
+        print(type(conversation_memory.load_memory_variables({})["history"]))
+        print(conversation_memory.load_memory_variables({})["history"])
+
+        # チャットぼっとからの返答 (この時Memoryから過去の2回の対話を取り出す)
+        chatbot_response = chat_llm.predict_messages(
+            conversation_memory.load_memory_variables({})["history"]
+        )
+        conversation_memory.chat_memory.add_message(chatbot_response)
+
+        print(conversation_memory.load_memory_variables({}))
+        question_count += 1
+
 if __name__ == "__main__":
     # memory()
     # window_memory()
     # chatbot_memory()
-    token_memory()
+    # token_memory()
+    # summary_memory()
+    # summary_token_memory()
+    # custom_summary_token_memory()
+    chatbot_summary_history()
     pass
