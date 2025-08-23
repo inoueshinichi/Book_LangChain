@@ -4,6 +4,9 @@ numpy
 scipy
 matplotlib
 
+pypdf
+unstructured[md]
+
 Flask
 
 openai
