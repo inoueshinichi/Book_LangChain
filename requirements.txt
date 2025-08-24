@@ -6,6 +6,12 @@ matplotlib
 
 pypdf
 unstructured[md]
+html2text
+beautifulsoup4
+chromadb
+wikipedia
+numexpr
+google-search-results
 
 Flask
 
@@ -14,3 +20,5 @@ tiktoken
 langchain
 langchain_community
 langchain_openai
+langchain_chroma
+langchain-experimental
